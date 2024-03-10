@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS db_saldo_transferencias;
+USE db_saldo_transferencias;
+
 CREATE TABLE IF NOT EXISTS tb_transferencia_bancaria (
     id_transferencia_bancaria CHAR(36) NOT NULL,
     num_conta_origem VARCHAR(255) NOT NULL,

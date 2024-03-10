@@ -72,7 +72,7 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>7.5.3</version>
 				<configuration>
-					<url>jdbc:mysql://db:3306/db_saldo_transferencia</url>
+					<url>jdbc:mysql://db:3306/db_saldo_transferencias</url>
 					<user>root</user>
 					<password>root</password>
 				</configuration>

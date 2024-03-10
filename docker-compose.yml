@@ -16,7 +16,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_saldo_transferencia
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_saldo_transferencias
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:

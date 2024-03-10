@@ -1,0 +1,5 @@
+# Ignorar diretório .idea
+.idea/
+
+# Ignorar diretório target
+target/
