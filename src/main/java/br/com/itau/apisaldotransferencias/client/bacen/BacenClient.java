@@ -21,6 +21,7 @@ public class BacenClient {
 
     public ResponseEntity<String> enviarTransferencia(BacenRequest request) {
 
+        // Simula o rate limit
         if (random.nextInt(10) == 0) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Rate limit atingido.");
         }
