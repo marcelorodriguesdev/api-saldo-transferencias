@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Table(schema = "tb_saldo_conta_corrente")
-public class ContaCorrenteEntity {
+public class SaldoContaCorrenteEntity {
 
     @Id
     @Column(name = "id_conta_corrente")
@@ -22,6 +22,9 @@ public class ContaCorrenteEntity {
     @Column(name = "val_limite_diario")
     private BigDecimal valLimiteDiario;
 
+    @Column(name = "val_saldo_conta_corrente")
+    private BigDecimal valSaldoContaCorrente;
+
     public String getNumContaCorrente() {
         return numContaCorrente;
     }
@@ -32,5 +35,9 @@ public class ContaCorrenteEntity {
 
     public BigDecimal getValLimiteDiario() {
         return valLimiteDiario;
+    }
+
+    public BigDecimal getValSaldoContaCorrente() {
+        return valSaldoContaCorrente;
     }
 }

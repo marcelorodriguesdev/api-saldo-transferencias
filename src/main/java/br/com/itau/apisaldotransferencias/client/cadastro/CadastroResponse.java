@@ -10,4 +10,16 @@ public class CadastroResponse {
         this.situacaoContaCorrente = situacaoContaCorrente;
         this.dataAberturaContaCorrente = dataAberturaContaCorrente;
     }
+
+    public String getSituacaoContaCorrente() {
+        return situacaoContaCorrente;
+    }
+
+    public String getDataAberturaContaCorrente() {
+        return dataAberturaContaCorrente;
+    }
+
+    public String getNome() {
+        return nome;
+    }
 }

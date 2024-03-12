@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS tb_saldo_conta_corrente (
     num_conta_corrente VARCHAR(30) NOT NULL,
     val_limite_disponivel DECIMAL(19, 2) NOT NULL,
     val_limite_diario DECIMAL(19, 2) NOT NULL DEFAULT 1000.00,
+    val_saldo_conta_corrente DECIMAL(19, 2) NOT NULL,
     PRIMARY KEY (cod_conta_corrente)
 );
