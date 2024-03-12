@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 public class BacenRequest {
 
     private String idTransferenciaBancaria;
-    private String numContaOrigem;
-    private String numContaDestino;
-    private LocalDateTime datHorarioDaTransferencia;
+    private String numeroContaOrigem;
+
+    private String codigoBancoDestino;
+    private String numeroContaDestino;
+    private LocalDateTime dataHorarioDaTransferencia;
     private Double valTransferencia;
 
     public String getIdTransferenciaBancaria() {
@@ -18,28 +20,36 @@ public class BacenRequest {
         this.idTransferenciaBancaria = idTransferenciaBancaria;
     }
 
-    public String getNumContaOrigem() {
-        return numContaOrigem;
+    public String getNumeroContaOrigem() {
+        return numeroContaOrigem;
     }
 
-    public void setNumContaOrigem(String numContaOrigem) {
-        this.numContaOrigem = numContaOrigem;
+    public void setNumeroContaOrigem(String numeroContaOrigem) {
+        this.numeroContaOrigem = numeroContaOrigem;
     }
 
-    public String getNumContaDestino() {
-        return numContaDestino;
+    public String getCodigoBancoDestino() {
+        return codigoBancoDestino;
     }
 
-    public void setNumContaDestino(String numContaDestino) {
-        this.numContaDestino = numContaDestino;
+    public void setCodigoBancoDestino(String codigoBancoDestino) {
+        this.codigoBancoDestino = codigoBancoDestino;
     }
 
-    public LocalDateTime getDatHorarioDaTransferencia() {
-        return datHorarioDaTransferencia;
+    public String getNumeroContaDestino() {
+        return numeroContaDestino;
     }
 
-    public void setDatHorarioDaTransferencia(LocalDateTime datHorarioDaTransferencia) {
-        this.datHorarioDaTransferencia = datHorarioDaTransferencia;
+    public void setNumeroContaDestino(String numeroContaDestino) {
+        this.numeroContaDestino = numeroContaDestino;
+    }
+
+    public LocalDateTime getDataHorarioDaTransferencia() {
+        return dataHorarioDaTransferencia;
+    }
+
+    public void setDataHorarioDaTransferencia(LocalDateTime dataHorarioDaTransferencia) {
+        this.dataHorarioDaTransferencia = dataHorarioDaTransferencia;
     }
 
     public Double getValTransferencia() {

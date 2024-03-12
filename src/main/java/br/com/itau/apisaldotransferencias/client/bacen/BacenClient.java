@@ -1,3 +1,5 @@
+package br.com.itau.apisaldotransferencias.client.bacen;
+
 import br.com.itau.apisaldotransferencias.client.bacen.BacenRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
