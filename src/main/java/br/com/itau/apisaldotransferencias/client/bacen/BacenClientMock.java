@@ -15,11 +15,9 @@ import java.util.Random;
 @Component
 public class BacenClientMock {
 
-    private final RestTemplate restTemplate;
     private final Random random;
 
-    public BacenClientMock(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public BacenClientMock() {
         this.random = new Random();
     }
 

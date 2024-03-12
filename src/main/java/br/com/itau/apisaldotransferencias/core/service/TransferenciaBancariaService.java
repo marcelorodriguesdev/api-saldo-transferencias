@@ -1,6 +1,7 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
 import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
+import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
@@ -22,7 +23,7 @@ public class TransferenciaBancariaService {
         this.saldoContaCorrenteRepository = saldoContaCorrenteRepository;
     }
 
-    public Mono<TransferenciaBancariaEntity> createTransferencia(TransferenciaRequest request, SaldoContaCorrenteEntity saldoContaCorrente) {
+    public Mono<TransferenciaBancariaEntity> createTransferencia(TransferenciaRequest request, SaldoContaCorrenteEntity saldoContaCorrente, CadastroResponse cadastro) {
         return Mono.just(request)
                 .filter(req -> req.getCodigoBancoDestino().equals("184"))
                 .flatMap(req -> {
@@ -34,10 +35,10 @@ public class TransferenciaBancariaService {
                 .switchIfEmpty(persistTransferenciaBancaria(request));
     }
 
-    private static void atualizaSaldoBancarioDoPagador(SaldoContaCorrenteEntity saldoContaCorrente, TransferenciaRequest req) {
-        saldoContaCorrente.setValLimiteDisponivel(saldoContaCorrente.getValLimiteDisponivel().subtract(req.getValor()));
-        saldoContaCorrente.setValLimiteDiario(saldoContaCorrente.getValLimiteDiario().subtract(req.getValor()));
-        saldoContaCorrente.setValSaldoContaCorrente(saldoContaCorrente.getValSaldoContaCorrente().subtract(req.getValor()));
+    private static void atualizaSaldoBancarioDoPagador(SaldoContaCorrenteEntity saldoContaCorrente, TransferenciaRequest request) {
+        saldoContaCorrente.setValLimiteDisponivel(saldoContaCorrente.getValLimiteDisponivel().subtract(request.getValor()));
+        saldoContaCorrente.setValLimiteDiario(saldoContaCorrente.getValLimiteDiario().subtract(request.getValor()));
+        saldoContaCorrente.setValSaldoContaCorrente(saldoContaCorrente.getValSaldoContaCorrente().subtract(request.getValor()));
     }
 
     private Mono<TransferenciaBancariaEntity> persistTransferenciaBancaria(TransferenciaRequest req) {

@@ -29,7 +29,7 @@ public class TransferenciaBancariaFlow {
                     var saldoContaCorrente = resultados.getT1();
                     var cadastro = resultados.getT2();
                     transferenciaBancariaValidator.validarTransferencia(request, saldoContaCorrente, cadastro);
-                    return transferenciaBancariaService.createTransferencia(request, saldoContaCorrente);
+                    return transferenciaBancariaService.createTransferencia(request, saldoContaCorrente, cadastro);
                 });
     }
 

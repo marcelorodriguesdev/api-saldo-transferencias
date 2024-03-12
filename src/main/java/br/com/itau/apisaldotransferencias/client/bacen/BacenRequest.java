@@ -12,6 +12,7 @@ public class BacenRequest {
     private String numeroContaDestino;
     private LocalDateTime dataHorarioDaTransferencia;
     private BigDecimal valTransferencia;
+    private String nomeClient;
 
     public String getIdTransferenciaBancaria() {
         return idTransferenciaBancaria;
@@ -59,5 +60,13 @@ public class BacenRequest {
 
     public void setValTransferencia(BigDecimal valTransferencia) {
         this.valTransferencia = valTransferencia;
+    }
+
+    public String getNomeClient() {
+        return nomeClient;
+    }
+
+    public void setNomeClient(String nomeClient) {
+        this.nomeClient = nomeClient;
     }
 }
