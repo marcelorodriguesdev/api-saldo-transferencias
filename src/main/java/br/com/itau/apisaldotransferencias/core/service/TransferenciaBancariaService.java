@@ -1,7 +1,9 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
 import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
+import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
+import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
 import br.com.itau.apisaldotransferencias.infra.database.repository.TransferenciaBancariaRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -12,22 +14,42 @@ import java.util.UUID;
 @Service
 public class TransferenciaBancariaService {
 
-    private final TransferenciaBancariaRepository repository;
+    private final TransferenciaBancariaRepository transferenciaRepository;
+    private final SaldoContaCorrenteRepository saldoContaCorrenteRepository;
 
-    public TransferenciaBancariaService(TransferenciaBancariaRepository repository) {
-        this.repository = repository;
+    public TransferenciaBancariaService(TransferenciaBancariaRepository transferenciaRepository, SaldoContaCorrenteRepository saldoContaCorrenteRepository) {
+        this.transferenciaRepository = transferenciaRepository;
+        this.saldoContaCorrenteRepository = saldoContaCorrenteRepository;
     }
 
-    public Mono<TransferenciaBancariaEntity> createTransferencia(TransferenciaRequest request) {
+    public Mono<TransferenciaBancariaEntity> createTransferencia(TransferenciaRequest request, SaldoContaCorrenteEntity saldoContaCorrente) {
+        return Mono.just(request)
+                .filter(req -> req.getCodigoBancoDestino().equals("184"))
+                .flatMap(req -> {
+                    atualizaSaldoBancarioDoPagador(saldoContaCorrente, req);
+
+                    return saldoContaCorrenteRepository.save(saldoContaCorrente)
+                            .then(persistTransferenciaBancaria(req));
+                })
+                .switchIfEmpty(persistTransferenciaBancaria(request));
+    }
+
+    private static void atualizaSaldoBancarioDoPagador(SaldoContaCorrenteEntity saldoContaCorrente, TransferenciaRequest req) {
+        saldoContaCorrente.setValLimiteDisponivel(saldoContaCorrente.getValLimiteDisponivel().subtract(req.getValor()));
+        saldoContaCorrente.setValLimiteDiario(saldoContaCorrente.getValLimiteDiario().subtract(req.getValor()));
+        saldoContaCorrente.setValSaldoContaCorrente(saldoContaCorrente.getValSaldoContaCorrente().subtract(req.getValor()));
+    }
+
+    private Mono<TransferenciaBancariaEntity> persistTransferenciaBancaria(TransferenciaRequest req) {
         TransferenciaBancariaEntity transferencia = new TransferenciaBancariaEntity();
 
         transferencia.setCodTransferenciaBancaria(UUID.randomUUID().toString());
-        transferencia.setNumContaOrigem(request.getContaOrigem());
-        transferencia.setCodBancoDestino(request.getCodigoBancoDestino());
-        transferencia.setNumContaDestino(request.getContaDestino());
+        transferencia.setNumContaOrigem(req.getContaOrigem());
+        transferencia.setCodBancoDestino(req.getCodigoBancoDestino());
+        transferencia.setNumContaDestino(req.getContaDestino());
         transferencia.setDatHorarioDaTransferencia(Instant.now().toString());
-        transferencia.setValTransferencia(request.getValor());
-        return repository.save(transferencia);
-    }
+        transferencia.setValTransferencia(req.getValor());
 
+        return transferenciaRepository.save(transferencia);
+    }
 }

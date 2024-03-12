@@ -40,4 +40,24 @@ public class SaldoContaCorrenteEntity {
     public BigDecimal getValSaldoContaCorrente() {
         return valSaldoContaCorrente;
     }
+
+    public void setIdContaCorrente(String idContaCorrente) {
+        this.idContaCorrente = idContaCorrente;
+    }
+
+    public void setNumContaCorrente(String numContaCorrente) {
+        this.numContaCorrente = numContaCorrente;
+    }
+
+    public void setValLimiteDisponivel(BigDecimal valLimiteDisponivel) {
+        this.valLimiteDisponivel = valLimiteDisponivel;
+    }
+
+    public void setValLimiteDiario(BigDecimal valLimiteDiario) {
+        this.valLimiteDiario = valLimiteDiario;
+    }
+
+    public void setValSaldoContaCorrente(BigDecimal valSaldoContaCorrente) {
+        this.valSaldoContaCorrente = valSaldoContaCorrente;
+    }
 }

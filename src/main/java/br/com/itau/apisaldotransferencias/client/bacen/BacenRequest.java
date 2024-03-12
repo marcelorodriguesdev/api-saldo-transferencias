@@ -1,5 +1,6 @@
 package br.com.itau.apisaldotransferencias.client.bacen;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BacenRequest {
@@ -10,7 +11,7 @@ public class BacenRequest {
     private String codigoBancoDestino;
     private String numeroContaDestino;
     private LocalDateTime dataHorarioDaTransferencia;
-    private Double valTransferencia;
+    private BigDecimal valTransferencia;
 
     public String getIdTransferenciaBancaria() {
         return idTransferenciaBancaria;
@@ -52,11 +53,11 @@ public class BacenRequest {
         this.dataHorarioDaTransferencia = dataHorarioDaTransferencia;
     }
 
-    public Double getValTransferencia() {
+    public BigDecimal getValTransferencia() {
         return valTransferencia;
     }
 
-    public void setValTransferencia(Double valTransferencia) {
+    public void setValTransferencia(BigDecimal valTransferencia) {
         this.valTransferencia = valTransferencia;
     }
 }

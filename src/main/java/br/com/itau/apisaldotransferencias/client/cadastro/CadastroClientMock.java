@@ -1,19 +1,17 @@
 package br.com.itau.apisaldotransferencias.client.cadastro;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Component
-public class CadastroClient {
+public class CadastroClientMock {
 
     private final RestTemplate restTemplate;
 
-    public CadastroClient() {
+    public CadastroClientMock() {
         this.restTemplate = new RestTemplate();
     }
 
