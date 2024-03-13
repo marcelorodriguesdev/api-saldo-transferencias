@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Service
 public class TransferenciaBancariaValidator {
 
+    //TODO substitui os ultimos 2 parametros pelo contexto
     public Mono<TransferenciaRequest> validarTransferencia(TransferenciaRequest transferencia, SaldoContaCorrenteEntity saldo, CadastroResponse cadastro) {
         return Mono.zip(
                 validarLimite(transferencia.getValor(), saldo.getValLimiteDiario(), "limiteDiario"),

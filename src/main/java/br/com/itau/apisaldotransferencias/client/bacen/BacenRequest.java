@@ -10,9 +10,9 @@ public class BacenRequest {
 
     private String codigoBancoDestino;
     private String numeroContaDestino;
-    private LocalDateTime dataHorarioDaTransferencia;
+    private String dataHorarioDaTransferencia;
     private BigDecimal valTransferencia;
-    private String nomeClient;
+    private String nomeCliente;
 
     public String getIdTransferenciaBancaria() {
         return idTransferenciaBancaria;
@@ -46,11 +46,11 @@ public class BacenRequest {
         this.numeroContaDestino = numeroContaDestino;
     }
 
-    public LocalDateTime getDataHorarioDaTransferencia() {
+    public String getDataHorarioDaTransferencia() {
         return dataHorarioDaTransferencia;
     }
 
-    public void setDataHorarioDaTransferencia(LocalDateTime dataHorarioDaTransferencia) {
+    public void setDataHorarioDaTransferencia(String dataHorarioDaTransferencia) {
         this.dataHorarioDaTransferencia = dataHorarioDaTransferencia;
     }
 
@@ -62,11 +62,11 @@ public class BacenRequest {
         this.valTransferencia = valTransferencia;
     }
 
-    public String getNomeClient() {
-        return nomeClient;
+    public String getNomeCliente() {
+        return nomeCliente;
     }
 
-    public void setNomeClient(String nomeClient) {
-        this.nomeClient = nomeClient;
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
     }
 }

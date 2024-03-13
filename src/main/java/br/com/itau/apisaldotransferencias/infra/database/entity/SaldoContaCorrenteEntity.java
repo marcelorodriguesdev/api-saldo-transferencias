@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public class SaldoContaCorrenteEntity {
 
     @Id
-    @Column(name = "id_conta_corrente")
-    private String idContaCorrente;
+    @Column(name = "cod_conta_corrente")
+    private String codContaCorrente;
 
     @Column(name = "num_conta_corrente")
     private String numContaCorrente;
@@ -41,8 +41,8 @@ public class SaldoContaCorrenteEntity {
         return valSaldoContaCorrente;
     }
 
-    public void setIdContaCorrente(String idContaCorrente) {
-        this.idContaCorrente = idContaCorrente;
+    public void setCodContaCorrente(String codContaCorrente) {
+        this.codContaCorrente = codContaCorrente;
     }
 
     public void setNumContaCorrente(String numContaCorrente) {
