@@ -24,13 +24,12 @@ public class TransferenciaBancariaFlow {
         this.context = context;
     }
 
-
-    public Mono<TransferenciaResponse> realizaTransferencia(TransferenciaRequest request) {
+    public Mono<TransferenciaResponse> realizaTransferenciaBancaria(TransferenciaRequest request) {
         return Mono.zip(
                         saldoContaCorrenteFlow.fetchSaldoContaCorrente(request.getContaOrigem()),
                         cadastroClient.getCadastro(request.getContaDestino())
                 )
-                .flatMap(resultados -> {
+                .map(resultados -> {
                     var saldoContaCorrente = resultados.getT1();
                     context.setSaldoContaCorrente(saldoContaCorrente);
 
@@ -41,8 +40,7 @@ public class TransferenciaBancariaFlow {
 
                     transferenciaBancariaService.createTransferencia(request, context);
 
-                    return Mono.just(montaTransferenciaResponse(request));
-
+                    return montaTransferenciaResponse(request);
                 });
     }
 

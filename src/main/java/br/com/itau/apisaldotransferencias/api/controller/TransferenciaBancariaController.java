@@ -23,7 +23,7 @@ public class TransferenciaBancariaController {
     @PostMapping("/transferencias")
     public Mono<ResponseEntity<TransferenciaResponse>> realizarTransferencia(@Valid @RequestBody TransferenciaRequest request) {
 
-        return transferenciaBancariaFlow.realizaTransferencia(request)
+        return transferenciaBancariaFlow.realizaTransferenciaBancaria(request)
                 .map(transferenciaResponse -> ResponseEntity.status(HttpStatus.CREATED).body(transferenciaResponse));
     }
 
