@@ -1,8 +1,7 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
 import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
-import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,12 +11,11 @@ import java.math.BigDecimal;
 @Service
 public class TransferenciaBancariaValidator {
 
-    //TODO substitui os ultimos 2 parametros pelo contexto
-    public Mono<TransferenciaRequest> validarTransferencia(TransferenciaRequest transferencia, SaldoContaCorrenteEntity saldo, CadastroResponse cadastro) {
+    public Mono<TransferenciaContext> validarTransferencia(TransferenciaRequest transferencia, TransferenciaContext context) {
         return Mono.zip(
-                validarLimite(transferencia.getValor(), saldo.getValLimiteDiario(), "limiteDiario"),
-                validarLimite(transferencia.getValor(), saldo.getValLimiteDisponivel(), "limiteDisponivel"),
-                validarSituacaoConta(cadastro.getSituacaoContaCorrente())
+                validarLimite(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDiario(), "limiteDiario"),
+                validarLimite(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDisponivel(), "limiteDisponivel"),
+                validarSituacaoConta(context.getCadastroResponse().getSituacaoContaCorrente())
         ).flatMap(tuple -> {
             Boolean limiteDiarioValido = tuple.getT1();
             Boolean limiteDisponivelValido = tuple.getT2();
@@ -30,7 +28,7 @@ public class TransferenciaBancariaValidator {
             } else if (contaBloqueada) {
                 return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "A transferência não pode ser realizada pois a conta corrente está bloqueada."));
             } else {
-                return Mono.just(transferencia);
+                return Mono.just(context);
             }
         });
     }

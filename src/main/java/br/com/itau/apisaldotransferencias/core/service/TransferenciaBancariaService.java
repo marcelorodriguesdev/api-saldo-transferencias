@@ -5,6 +5,7 @@ import br.com.itau.apisaldotransferencias.client.bacen.BacenClientMock;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenRequest;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenResponse;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
@@ -33,15 +34,18 @@ public class TransferenciaBancariaService {
         this.bacenClient = bacenClient;
     }
 
-    public Mono<TransferenciaBancariaEntity> createTransferencia(TransferenciaRequest request, SaldoContaCorrenteEntity saldoContaCorrente, CadastroResponse cadastro) {
-        return atualizaSaldoBancarioDoPagadorEPersiste(saldoContaCorrente, request)
+    public Mono<?> createTransferencia(TransferenciaRequest request, TransferenciaContext context) {
+        return atualizaSaldoBancarioDoPagadorEPersiste(context.getSaldoContaCorrente(), request)
                 .zipWith(persistTransferenciaBancaria(request))
-                //TODO adiciona o BacenRequest ao contexto
                 .flatMap(tuple -> {
-                    BacenRequest bacenRequest = montaBacenRequest(request, cadastro, tuple);
+                    BacenRequest bacenRequest = montaBacenRequest(request, context.getCadastroResponse(), tuple);
 
-                    return notificaTransferenciaAoBacen(bacenRequest)
-                            .then(Mono.just(tuple.getT2()));
+                    notificaTransferenciaAoBacen(bacenRequest);
+
+                    context.setTransferenciaBancaria(tuple.getT2());
+                    context.setBacenRequest(bacenRequest);
+
+                    return Mono.just(context);
                 })
                 .onErrorResume(e -> Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Erro ao processar a transferência", e)));
     }
@@ -73,7 +77,7 @@ public class TransferenciaBancariaService {
                         .filter(throwable -> throwable instanceof ResponseStatusException)
                         .filter(throwable -> ((ResponseStatusException) throwable).getStatusCode().equals(HttpStatus.TOO_MANY_REQUESTS))
                         .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                            // Em ultimo caso enviar para uma fila DLQ
+                            // Em ultimo caso enviar para uma fila DLQ para reprocessar
                             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível processar a transação após várias tentativas.", retrySignal.failure());
                         }));
     }
@@ -87,6 +91,7 @@ public class TransferenciaBancariaService {
         bacenRequest.setValTransferencia(request.getValor());
         bacenRequest.setIdTransferenciaBancaria(tuple.getT2().getCodTransferenciaBancaria());
         bacenRequest.setNomeCliente(cadastro.getNome());
+
         return bacenRequest;
     }
 
