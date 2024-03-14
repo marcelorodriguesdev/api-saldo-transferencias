@@ -19,9 +19,9 @@ public class CadastroClientMock {
         return Mono.just(numeroConta)
                 .flatMap(conta -> {
                     switch (conta) {
-                        case "123":
+                        case "123456":
                             return Mono.just(new CadastroResponse("Fulano de Tal", "ATIVA", "2005-06-06"));
-                        case "456":
+                        case "456789":
                             return Mono.just(new CadastroResponse("Cliente Itau", "BLOQUEADA", "2020-03-03"));
                         default:
                             return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cadastro do cliente com o número " + numeroConta + " não foi encontrado."));
