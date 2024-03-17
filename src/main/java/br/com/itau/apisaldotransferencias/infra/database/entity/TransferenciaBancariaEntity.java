@@ -1,30 +1,32 @@
 package br.com.itau.apisaldotransferencias.infra.database.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import java.math.BigDecimal;
 
-@Table("tb_transferencia_bancaria")
+@Entity
+@Table(schema = "tb_transferencia_bancaria")
 public class TransferenciaBancariaEntity {
 
     @Id
-    @Column("cod_transferencia_bancaria")
+    @Column(name = "cod_transferencia_bancaria")
     private String codTransferenciaBancaria;
 
-    @Column("num_conta_origem")
+    @Column(name = "num_conta_origem")
     private String numContaOrigem;
 
-    @Column("cod_banco_destino")
+    @Column(name = "cod_banco_destino")
     private String codBancoDestino;
 
-    @Column("num_conta_destino")
+    @Column(name = "num_conta_destino")
     private String numContaDestino;
 
-    @Column("dat_horario_da_transferencia")
+    @Column(name = "dat_horario_da_transferencia")
     private String datHorarioDaTransferencia;
 
-    @Column("val_transferencia")
+    @Column(name = "val_transferencia")
     private BigDecimal valTransferencia;
 
 
