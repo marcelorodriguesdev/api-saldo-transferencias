@@ -1,25 +1,19 @@
-version: '3.8'
+version: '3.9'
 services:
   db:
     image: mysql:latest
+    restart: always
+    container_name: db_saldo_transferencias
     environment:
       MYSQL_DATABASE: 'db_saldo_transferencias'
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: 'root'
+      MYSQL_USER: 'guest'
+      MYSQL_PASSWORD: '123456'
+      MYSQL_ROOT_USER: 'root'
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
-      - "3306:3306"
+      - '3306:3306'
+    expose:
+      - '3306'
     volumes:
-      - db-data:/var/lib/mysql
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_saldo_transferencias
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-    depends_on:
-      - db
-volumes:
-  db-data:
+      - ./src/main/resources/db/scripts/V1__initial_schema.sql:/docker-entrypoint-initdb.d/V1__initial_schema.sql
+      - ./src/main/resources/db/scripts/V2__add_saldos.sql:/docker-entrypoint-initdb.d/V2__add_saldos.sql
