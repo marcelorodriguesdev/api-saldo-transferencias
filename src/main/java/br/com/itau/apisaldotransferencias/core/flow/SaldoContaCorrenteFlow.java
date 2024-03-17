@@ -19,7 +19,7 @@ public class SaldoContaCorrenteFlow {
 
     public Mono<SaldoContaCorrenteEntity> fetchSaldoContaCorrente(String numeroContaCorrente) {
         log.info("Iniciando busca pelo saldo da conta corrente: {}", numeroContaCorrente);
-        return repository.findByNumContaCorrente(numeroContaCorrente)
+        return Mono.just(repository.findByNumContaCorrente(numeroContaCorrente))
                 .doOnSuccess(saldo -> log.info("Saldo da conta corrente {} encontrado com sucesso.", numeroContaCorrente))
                 .doOnError(e -> log.error("Erro ao buscar o saldo da conta corrente {}.", numeroContaCorrente, e));
     }

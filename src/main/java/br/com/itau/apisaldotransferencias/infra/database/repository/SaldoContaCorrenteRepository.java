@@ -1,9 +1,10 @@
 package br.com.itau.apisaldotransferencias.infra.database.repository;
 
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface SaldoContaCorrenteRepository extends ReactiveCrudRepository<SaldoContaCorrenteEntity, String> {
-    Mono<SaldoContaCorrenteEntity> findByNumContaCorrente(String numContaCorrente);
+@Repository
+public interface SaldoContaCorrenteRepository extends JpaRepository<SaldoContaCorrenteEntity, String> {
+    SaldoContaCorrenteEntity findByNumContaCorrente(String numContaCorrente);
 }

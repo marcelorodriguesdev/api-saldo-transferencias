@@ -64,11 +64,23 @@ public class TransferenciaBancariaService {
     }
 
     public Mono<TransferenciaResponse> getTransferencia(String idTransferenciaBancaria) {
-        return transferenciaRepository.findByCodTransferenciaBancaria(idTransferenciaBancaria)
-                .doOnSuccess(transf -> logger.info("Consulta da transferência realizada com sucesso."))
-                .map(parseEntityToResponse())
+        return Mono.fromCallable(() -> transferenciaRepository.findByCodTransferenciaBancaria(idTransferenciaBancaria))
+                .doOnSuccess(transf -> {
+                    if (transf != null) {
+                        logger.info("Consulta da transferência realizada com sucesso.");
+                    } else {
+                        logger.error("Transferência bancária não encontrada.");
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transferência bancária não encontrada");
+                    }
+                })
+                .map(transf -> parseEntityToResponse().apply(transf))
                 .doOnError(e -> logger.error("Erro ao consultar a transferência bancária no banco de dados.", e))
-                .onErrorResume(e -> Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao consultar a transferencia bancaria no banco de dados", e)));
+                .onErrorResume(e -> {
+                    if (e instanceof ResponseStatusException) {
+                        return Mono.error(e);
+                    }
+                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao consultar a transferencia bancaria no banco de dados", e));
+                });
     }
 
     private static Function<TransferenciaBancariaEntity, TransferenciaResponse> parseEntityToResponse() {
@@ -90,7 +102,7 @@ public class TransferenciaBancariaService {
         saldoContaCorrente.setValLimiteDiario(saldoContaCorrente.getValLimiteDiario().subtract(request.getValor()));
         saldoContaCorrente.setValSaldoContaCorrente(saldoContaCorrente.getValSaldoContaCorrente().subtract(request.getValor()));
 
-        return saldoContaCorrenteRepository.save(saldoContaCorrente);
+        return Mono.just(saldoContaCorrenteRepository.save(saldoContaCorrente));
     }
 
     private Mono<TransferenciaBancariaEntity> persistTransferenciaBancaria(TransferenciaRequest req) {
@@ -103,7 +115,7 @@ public class TransferenciaBancariaService {
         transferencia.setDatHorarioDaTransferencia(Instant.now().toString());
         transferencia.setValTransferencia(req.getValor());
 
-        return transferenciaRepository.save(transferencia);
+        return Mono.just(transferenciaRepository.save(transferencia));
     }
 
     public Mono<BacenResponse> notificaTransferenciaAoBacen(BacenRequest request) {
