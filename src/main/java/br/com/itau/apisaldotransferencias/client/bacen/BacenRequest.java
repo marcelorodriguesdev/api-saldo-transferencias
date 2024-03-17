@@ -1,14 +1,18 @@
 package br.com.itau.apisaldotransferencias.client.bacen;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BacenRequest {
 
     private String idTransferenciaBancaria;
-    private String numContaOrigem;
-    private String numContaDestino;
-    private LocalDateTime datHorarioDaTransferencia;
-    private Double valTransferencia;
+    private String numeroContaOrigem;
+
+    private String codigoBancoDestino;
+    private String numeroContaDestino;
+    private String dataHorarioDaTransferencia;
+    private BigDecimal valTransferencia;
+    private String nomeCliente;
 
     public String getIdTransferenciaBancaria() {
         return idTransferenciaBancaria;
@@ -18,35 +22,51 @@ public class BacenRequest {
         this.idTransferenciaBancaria = idTransferenciaBancaria;
     }
 
-    public String getNumContaOrigem() {
-        return numContaOrigem;
+    public String getNumeroContaOrigem() {
+        return numeroContaOrigem;
     }
 
-    public void setNumContaOrigem(String numContaOrigem) {
-        this.numContaOrigem = numContaOrigem;
+    public void setNumeroContaOrigem(String numeroContaOrigem) {
+        this.numeroContaOrigem = numeroContaOrigem;
     }
 
-    public String getNumContaDestino() {
-        return numContaDestino;
+    public String getCodigoBancoDestino() {
+        return codigoBancoDestino;
     }
 
-    public void setNumContaDestino(String numContaDestino) {
-        this.numContaDestino = numContaDestino;
+    public void setCodigoBancoDestino(String codigoBancoDestino) {
+        this.codigoBancoDestino = codigoBancoDestino;
     }
 
-    public LocalDateTime getDatHorarioDaTransferencia() {
-        return datHorarioDaTransferencia;
+    public String getNumeroContaDestino() {
+        return numeroContaDestino;
     }
 
-    public void setDatHorarioDaTransferencia(LocalDateTime datHorarioDaTransferencia) {
-        this.datHorarioDaTransferencia = datHorarioDaTransferencia;
+    public void setNumeroContaDestino(String numeroContaDestino) {
+        this.numeroContaDestino = numeroContaDestino;
     }
 
-    public Double getValTransferencia() {
+    public String getDataHorarioDaTransferencia() {
+        return dataHorarioDaTransferencia;
+    }
+
+    public void setDataHorarioDaTransferencia(String dataHorarioDaTransferencia) {
+        this.dataHorarioDaTransferencia = dataHorarioDaTransferencia;
+    }
+
+    public BigDecimal getValTransferencia() {
         return valTransferencia;
     }
 
-    public void setValTransferencia(Double valTransferencia) {
+    public void setValTransferencia(BigDecimal valTransferencia) {
         this.valTransferencia = valTransferencia;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
     }
 }

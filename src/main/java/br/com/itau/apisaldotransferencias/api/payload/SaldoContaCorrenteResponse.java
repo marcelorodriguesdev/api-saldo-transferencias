@@ -2,41 +2,41 @@ package br.com.itau.apisaldotransferencias.api.payload;
 
 import java.math.BigDecimal;
 
-import java.math.BigDecimal;
-
 public class SaldoContaCorrenteResponse {
-    private String numContaCorrente;
-    private BigDecimal valLimiteDisponivel;
-    private BigDecimal valLimiteDiario;
+    private String numeroContaCorrente;
+    private BigDecimal limiteDisponivel;
+    private BigDecimal limiteDiario;
+    private BigDecimal saldo;
 
-    public SaldoContaCorrenteResponse(String numContaCorrente, BigDecimal valLimiteDisponivel, BigDecimal valLimiteDiario) {
-        this.numContaCorrente = numContaCorrente;
-        this.valLimiteDisponivel = valLimiteDisponivel;
-        this.valLimiteDiario = valLimiteDiario;
+    public SaldoContaCorrenteResponse(String numeroContaCorrente, BigDecimal limiteDisponivel, BigDecimal limiteDiario, BigDecimal saldo) {
+        this.numeroContaCorrente = numeroContaCorrente;
+        this.limiteDisponivel = limiteDisponivel;
+        this.limiteDiario = limiteDiario;
+        this.saldo = saldo;
     }
 
-    public String getNumContaCorrente() {
-        return numContaCorrente;
+    public String getNumeroContaCorrente() {
+        return numeroContaCorrente;
     }
 
-    public void setNumContaCorrente(String numContaCorrente) {
-        this.numContaCorrente = numContaCorrente;
+    public void setNumeroContaCorrente(String numeroContaCorrente) {
+        this.numeroContaCorrente = numeroContaCorrente;
     }
 
-    public BigDecimal getValLimiteDisponivel() {
-        return valLimiteDisponivel;
+    public BigDecimal getLimiteDisponivel() {
+        return limiteDisponivel;
     }
 
-    public void setValLimiteDisponivel(BigDecimal valLimiteDisponivel) {
-        this.valLimiteDisponivel = valLimiteDisponivel;
+    public void setLimiteDisponivel(BigDecimal limiteDisponivel) {
+        this.limiteDisponivel = limiteDisponivel;
     }
 
-    public BigDecimal getValLimiteDiario() {
-        return valLimiteDiario;
+    public BigDecimal getLimiteDiario() {
+        return limiteDiario;
     }
 
-    public void setValLimiteDiario(BigDecimal valLimiteDiario) {
-        this.valLimiteDiario = valLimiteDiario;
+    public void setLimiteDiario(BigDecimal limiteDiario) {
+        this.limiteDiario = limiteDiario;
     }
 }
 
