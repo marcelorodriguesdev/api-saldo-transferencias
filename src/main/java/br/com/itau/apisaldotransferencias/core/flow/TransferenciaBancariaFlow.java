@@ -6,9 +6,17 @@ import br.com.itau.apisaldotransferencias.client.cadastro.CadastroClientMock;
 import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
 import br.com.itau.apisaldotransferencias.core.service.TransferenciaBancariaService;
 import br.com.itau.apisaldotransferencias.core.service.TransferenciaBancariaValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.nio.channels.FileChannel;
+
+@Service
 public class TransferenciaBancariaFlow {
+    private static final Logger logger = LoggerFactory.getLogger(TransferenciaBancariaFlow.class);
+
     private final CadastroClientMock cadastroClient;
     private final SaldoContaCorrenteFlow saldoContaCorrenteFlow;
     private final TransferenciaBancariaService transferenciaBancariaService;
@@ -29,6 +37,8 @@ public class TransferenciaBancariaFlow {
                         saldoContaCorrenteFlow.fetchSaldoContaCorrente(request.getContaOrigem()),
                         cadastroClient.getCadastro(request.getContaDestino())
                 )
+                .doOnSuccess(result -> logger.info("Dados de saldo e cadastro obtidos com sucesso para a transferência."))
+                .doOnError(e -> logger.error("Erro ao obter dados para a transferência.", e))
                 .map(resultados -> {
                     var saldoContaCorrente = resultados.getT1();
                     context.setSaldoContaCorrente(saldoContaCorrente);
@@ -44,6 +54,10 @@ public class TransferenciaBancariaFlow {
                 });
     }
 
+    public Mono<TransferenciaResponse> consultarTransferenciaBancaria(String idTransferenciaBancaria) {
+        return transferenciaBancariaService.getTransferencia(idTransferenciaBancaria);
+    }
+
     private TransferenciaResponse montaTransferenciaResponse(TransferenciaRequest request) {
         return new TransferenciaResponse(
                 context.getTransferenciaBancaria().getCodTransferenciaBancaria(),
@@ -55,5 +69,4 @@ public class TransferenciaBancariaFlow {
                 context.getCadastroResponse().getNome()
         );
     }
-
 }

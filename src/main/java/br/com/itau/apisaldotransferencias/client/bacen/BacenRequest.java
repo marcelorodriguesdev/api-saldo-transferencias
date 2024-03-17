@@ -1,13 +1,11 @@
 package br.com.itau.apisaldotransferencias.client.bacen;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class BacenRequest {
 
     private String idTransferenciaBancaria;
     private String numeroContaOrigem;
-
     private String codigoBancoDestino;
     private String numeroContaDestino;
     private String dataHorarioDaTransferencia;

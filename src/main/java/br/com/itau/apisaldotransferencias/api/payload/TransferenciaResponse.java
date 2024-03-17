@@ -9,7 +9,7 @@ public class TransferenciaResponse {
         private String contaDestino;
         private String data;
         private BigDecimal valor;
-        private String nomeCliente;
+        private String nomeCliente = null;
 
     public TransferenciaResponse(String codigoTransferenciaBancaria, String contaOrigem, String codigoBancoDestino,
                                  String contaDestino, String data, BigDecimal valor, String nomeCliente) {
@@ -20,6 +20,10 @@ public class TransferenciaResponse {
         this.data = data;
         this.valor = valor;
         this.nomeCliente = nomeCliente;
+    }
+
+    public TransferenciaResponse() {
+
     }
 
     public String getCodigoTransferenciaBancaria() {
