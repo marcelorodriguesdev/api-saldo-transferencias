@@ -1,24 +1,20 @@
 package br.com.itau.apisaldotransferencias.core.flow;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaResponse;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaResponse;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroClientMock;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
 import br.com.itau.apisaldotransferencias.core.EntityFactoryTest;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import br.com.itau.apisaldotransferencias.core.service.TransferenciaBancariaService;
 import br.com.itau.apisaldotransferencias.core.service.TransferenciaBancariaValidator;
-import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -26,13 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.openMocks;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 public class TransferenciaBancariaFlowTest {
 
@@ -45,7 +34,7 @@ public class TransferenciaBancariaFlowTest {
     @Mock
     private TransferenciaBancariaValidator transferenciaBancariaValidator;
     @Mock
-    private TransferenciaContext context;
+    private TransferenciaBancariaContext context;
 
     @InjectMocks
     private TransferenciaBancariaFlow flow;
@@ -68,14 +57,14 @@ public class TransferenciaBancariaFlowTest {
 
     @Test
     public void shouldCompleteSuccessfullyWhenIsValidTransferenciaBancaria() {
-        TransferenciaRequest request = EntityFactoryTest.createTransferenciaRequest();
+        TransferenciaBancariaRequest request = EntityFactoryTest.createTransferenciaRequest();
         TransferenciaBancariaEntity transferenciaEntity = EntityFactoryTest.createTransferenciaBancariaEntity();
 
 
-        when(context.getTransferenciaBancaria()).thenReturn(transferenciaEntity);
-        doReturn(Mono.just(transferenciaEntity)).when(transferenciaBancariaService).createTransferencia(any(TransferenciaRequest.class), any(TransferenciaContext.class));
+        when(context.getTransferenciaBancariaEntity()).thenReturn(transferenciaEntity);
+        doReturn(Mono.just(transferenciaEntity)).when(transferenciaBancariaService).createTransferencia(any(TransferenciaBancariaRequest.class), any(TransferenciaBancariaContext.class));
 
-        Mono<TransferenciaResponse> result = flow.realizaTransferenciaBancaria(request);
+        Mono<TransferenciaBancariaResponse> result = flow.performTransferenciaBancaria(request);
 
         StepVerifier.create(result)
                 .expectNextMatches(response ->

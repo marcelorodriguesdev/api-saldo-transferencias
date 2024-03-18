@@ -1,7 +1,7 @@
 package br.com.itau.apisaldotransferencias.api.controller;
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaResponse;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaResponse;
 import br.com.itau.apisaldotransferencias.core.flow.TransferenciaBancariaFlow;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-@RestController("/transferencias")
+@RestController("/v1/transferencias")
 public class TransferenciaBancariaController {
 
     private static final Logger logger = LoggerFactory.getLogger(TransferenciaBancariaController.class);
@@ -26,17 +26,17 @@ public class TransferenciaBancariaController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<TransferenciaResponse>> realizarTransferencia(@Valid @RequestBody TransferenciaRequest request) {
+    public Mono<ResponseEntity<TransferenciaBancariaResponse>> performTransferenciaBancaria(@Valid @RequestBody TransferenciaBancariaRequest request) {
         logger.info("Iniciando transferência: {}", request);
-        return transferenciaBancariaFlow.realizaTransferenciaBancaria(request)
+        return transferenciaBancariaFlow.performTransferenciaBancaria(request)
                 .doOnNext(response -> logger.info("Transferência realizada com sucesso: {}", response))
                 .map(transferenciaResponse -> ResponseEntity.status(HttpStatus.CREATED).body(transferenciaResponse));
     }
 
     @GetMapping("/{idTransferenciaBancaria}")
-    public Mono<ResponseEntity<TransferenciaResponse>> consultarTransferencia(@PathVariable String idTransferenciaBancaria) {
+    public Mono<ResponseEntity<TransferenciaBancariaResponse>> getTransferenciaBancaria(@PathVariable String idTransferenciaBancaria) {
         logger.info("Consultando transferência: {}", idTransferenciaBancaria);
-        return transferenciaBancariaFlow.consultarTransferenciaBancaria(idTransferenciaBancaria)
+        return transferenciaBancariaFlow.fetchTransferenciaBancaria(idTransferenciaBancaria)
                 .doOnNext(response -> logger.info("Consulta realizada com sucesso: {}", response))
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());

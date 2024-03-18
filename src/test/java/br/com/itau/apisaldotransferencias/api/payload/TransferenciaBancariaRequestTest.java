@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 public class TransferenciaBancariaRequestTest {
 
     private Validator validator;
-    private TransferenciaRequest request;
+    private TransferenciaBancariaRequest request;
 
     @BeforeEach
     public void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
-        request = new TransferenciaRequest();
+        request = new TransferenciaBancariaRequest();
         request.setValor(new BigDecimal("100.00"));
     }
 
-    private Set<ConstraintViolation<TransferenciaRequest>> validateRequest() {
+    private Set<ConstraintViolation<TransferenciaBancariaRequest>> validateRequest() {
         return validator.validate(request);
     }
 
@@ -35,9 +35,9 @@ public class TransferenciaBancariaRequestTest {
     @Test
     public void shouldViolateWhenContaOrigemIsInvalid() {
         request.setContaOrigem("abc123");
-        Set<ConstraintViolation<TransferenciaRequest>> violations = validateRequest();
+        Set<ConstraintViolation<TransferenciaBancariaRequest>> violations = validateRequest();
         assertThat(violations).hasSize(1);
-        ConstraintViolation<TransferenciaRequest> violation = violations.iterator().next();
+        ConstraintViolation<TransferenciaBancariaRequest> violation = violations.iterator().next();
         assertThat(violation.getMessage()).isEqualTo("O numero da conta de origem deve conter apenas dígitos");
     }
 
@@ -50,9 +50,9 @@ public class TransferenciaBancariaRequestTest {
     @Test
     public void shouldViolateWhenBankCodigoBancoDestinoIsInvalid() {
         request.setCodigoBancoDestino("00A");
-        Set<ConstraintViolation<TransferenciaRequest>> violations = validateRequest();
+        Set<ConstraintViolation<TransferenciaBancariaRequest>> violations = validateRequest();
         assertThat(violations).hasSize(1);
-        ConstraintViolation<TransferenciaRequest> violation = violations.iterator().next();
+        ConstraintViolation<TransferenciaBancariaRequest> violation = violations.iterator().next();
         assertThat(violation.getMessage()).isEqualTo("O codigo do banco de destino deve conter apenas dígitos");
     }
 
@@ -65,9 +65,9 @@ public class TransferenciaBancariaRequestTest {
     @Test
     public void shouldViolateWhenContaDestinoIsInvalid() {
         request.setContaDestino("6543AB");
-        Set<ConstraintViolation<TransferenciaRequest>> violations = validateRequest();
+        Set<ConstraintViolation<TransferenciaBancariaRequest>> violations = validateRequest();
         assertThat(violations).hasSize(1);
-        ConstraintViolation<TransferenciaRequest> violation = violations.iterator().next();
+        ConstraintViolation<TransferenciaBancariaRequest> violation = violations.iterator().next();
         assertThat(violation.getMessage()).isEqualTo("O numero da conta de destino deve conter apenas dígitos");
     }
 

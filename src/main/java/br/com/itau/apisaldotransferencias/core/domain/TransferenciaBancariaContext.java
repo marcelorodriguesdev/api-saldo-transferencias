@@ -5,11 +5,11 @@ import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 
-public class TransferenciaContext {
+public class TransferenciaBancariaContext {
 
     private BacenRequest bacenRequest;
 
-    private TransferenciaBancariaEntity transferenciaBancaria;
+    private TransferenciaBancariaEntity transferenciaBancariaEntity;
 
     private SaldoContaCorrenteEntity saldoContaCorrenteEntity;
 
@@ -24,12 +24,12 @@ public class TransferenciaContext {
         this.bacenRequest = bacenRequest;
     }
 
-    public TransferenciaBancariaEntity getTransferenciaBancaria() {
-        return transferenciaBancaria;
+    public TransferenciaBancariaEntity getTransferenciaBancariaEntity() {
+        return transferenciaBancariaEntity;
     }
 
-    public void setTransferenciaBancaria(TransferenciaBancariaEntity transferenciaBancaria) {
-        this.transferenciaBancaria = transferenciaBancaria;
+    public void setTransferenciaBancariaEntity(TransferenciaBancariaEntity transferenciaBancariaEntity) {
+        this.transferenciaBancariaEntity = transferenciaBancariaEntity;
     }
 
     public SaldoContaCorrenteEntity getSaldoContaCorrente() {
