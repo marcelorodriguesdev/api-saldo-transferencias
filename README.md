@@ -15,6 +15,13 @@ Explicando as motivacoes das escolhas da arquitetura:
 
 Vale ressaltar que seja uma API critica e que nao pode ficar fora, vale a pena configurar a aplicacao para ser Multi Region.
 
+## Backlog
+
+1. Adicionar um endpoint para listar todas as transferencias de uma conta em um determinado periodo;
+2. Dependendo das regras de negocio as tabelas poderiam ter um relacionamento;
+3. Como sugestao abordada acima, implementar o consumo de mensagens via kafka para receber transferencias e adicionar ao saldo do recebedor.
+
+
 ## Rodar o projeto
 Para subir o docker, rodar o seguinte comando na raíz do projeto:
 
