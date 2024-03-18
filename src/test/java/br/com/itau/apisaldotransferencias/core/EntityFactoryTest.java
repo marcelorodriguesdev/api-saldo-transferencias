@@ -1,10 +1,10 @@
 package br.com.itau.apisaldotransferencias.core;
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenRequest;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenResponse;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 
@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class EntityFactoryTest {
-    public static TransferenciaContext createTransferenciaContext() {
-        TransferenciaContext transferenciaContext = new TransferenciaContext();
-        transferenciaContext.setBacenRequest(createBacenRequest());
-        transferenciaContext.setTransferenciaBancaria(createTransferenciaBancariaEntity());
-        transferenciaContext.setSaldoContaCorrente(createSaldoContaCorrenteEntity());
-        transferenciaContext.setCadastroResponse(createCadastroResponse());
-        return transferenciaContext;
+    public static TransferenciaBancariaContext createTransferenciaContext() {
+        TransferenciaBancariaContext transferenciaBancariaContext = new TransferenciaBancariaContext();
+        transferenciaBancariaContext.setBacenRequest(createBacenRequest());
+        transferenciaBancariaContext.setTransferenciaBancariaEntity(createTransferenciaBancariaEntity());
+        transferenciaBancariaContext.setSaldoContaCorrente(createSaldoContaCorrenteEntity());
+        transferenciaBancariaContext.setCadastroResponse(createCadastroResponse());
+        return transferenciaBancariaContext;
     }
 
     public static BacenResponse createBacenResponse() {
@@ -40,8 +40,8 @@ public class EntityFactoryTest {
         return saldo;
     }
 
-    public static TransferenciaRequest createTransferenciaRequest() {
-        TransferenciaRequest request = new TransferenciaRequest();
+    public static TransferenciaBancariaRequest createTransferenciaRequest() {
+        TransferenciaBancariaRequest request = new TransferenciaBancariaRequest();
         request.setCodigoBancoDestino("001");
         request.setContaDestino("234553");
         request.setContaOrigem("123456");

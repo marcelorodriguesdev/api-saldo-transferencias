@@ -1,16 +1,15 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaResponse;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaResponse;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenClientMock;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenRequest;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenResponse;
 import br.com.itau.apisaldotransferencias.core.EntityFactoryTest;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
@@ -52,7 +51,7 @@ class TransferenciaBancariaServiceTest {
         when(transferenciaBancariaRepository.findByCodTransferenciaBancaria(idTransferenciaBancaria))
                 .thenReturn(foundEntity);
 
-        Mono<TransferenciaResponse> result = service.getTransferencia(idTransferenciaBancaria);
+        Mono<TransferenciaBancariaResponse> result = service.getTransferencia(idTransferenciaBancaria);
 
         StepVerifier.create(result)
                 .expectNextMatches(response -> response.getCodigoTransferenciaBancaria().equals(foundEntity.getCodTransferenciaBancaria()))
@@ -86,8 +85,8 @@ class TransferenciaBancariaServiceTest {
 
     @Test
     public void shouldCreateTransferenciaContextWhenSuccessful() {
-        TransferenciaRequest request = EntityFactoryTest.createTransferenciaRequest();
-        TransferenciaContext context = EntityFactoryTest.createTransferenciaContext();
+        TransferenciaBancariaRequest request = EntityFactoryTest.createTransferenciaRequest();
+        TransferenciaBancariaContext context = EntityFactoryTest.createTransferenciaContext();
         SaldoContaCorrenteEntity saldoContaCorrente = EntityFactoryTest.createSaldoContaCorrenteEntity();
         TransferenciaBancariaEntity transferenciaBancaria = EntityFactoryTest.createTransferenciaBancariaEntity();
         BacenResponse bacenResponse = EntityFactoryTest.createBacenResponse();
@@ -96,17 +95,17 @@ class TransferenciaBancariaServiceTest {
         when(transferenciaBancariaRepository.save(any(TransferenciaBancariaEntity.class))).thenReturn(transferenciaBancaria);
         when(bacenClient.notificarBacen(any(BacenRequest.class))).thenReturn(Mono.just(bacenResponse));
 
-        Mono<TransferenciaContext> result = service.createTransferencia(request, context);
+        Mono<TransferenciaBancariaContext> result = service.createTransferencia(request, context);
 
         StepVerifier.create(result)
-                .expectNextMatches(ctx -> ctx.getTransferenciaBancaria().equals(transferenciaBancaria) && ctx.getBacenRequest() != null)
+                .expectNextMatches(ctx -> ctx.getTransferenciaBancariaEntity().equals(transferenciaBancaria) && ctx.getBacenRequest() != null)
                 .verifyComplete();
     }
 
     @Test
     public void shouldEmitBadRequestErrorAfterRetriesFail() {
-        TransferenciaRequest request = EntityFactoryTest.createTransferenciaRequest();
-        TransferenciaContext context = EntityFactoryTest.createTransferenciaContext();
+        TransferenciaBancariaRequest request = EntityFactoryTest.createTransferenciaRequest();
+        TransferenciaBancariaContext context = EntityFactoryTest.createTransferenciaContext();
         when(saldoContaCorrenteRepository.save(any(SaldoContaCorrenteEntity.class)))
                 .thenReturn(EntityFactoryTest.createSaldoContaCorrenteEntity());
         when(transferenciaBancariaRepository.save(any(TransferenciaBancariaEntity.class)))

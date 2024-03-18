@@ -2,13 +2,11 @@ package br.com.itau.apisaldotransferencias.api.payload;
 
 import br.com.itau.apisaldotransferencias.api.APIUtils;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
 
-public class TransferenciaRequest {
+public class TransferenciaBancariaRequest {
 
     @Pattern(regexp = APIUtils.ONLY_NUMERIC_CHARACTERS, message = "O numero da conta de origem deve conter apenas dígitos")
     private String contaOrigem;

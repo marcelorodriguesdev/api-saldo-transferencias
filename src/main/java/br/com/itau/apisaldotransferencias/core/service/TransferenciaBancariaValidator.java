@@ -1,7 +1,7 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,21 +14,21 @@ import java.math.BigDecimal;
 public class TransferenciaBancariaValidator {
     private static final Logger logger = LoggerFactory.getLogger(TransferenciaBancariaValidator.class);
 
-    public Mono<TransferenciaContext> validarTransferencia(TransferenciaRequest transferencia, TransferenciaContext context) {
+    public Mono<TransferenciaBancariaContext> validateBankTransfer(TransferenciaBancariaRequest transferencia, TransferenciaBancariaContext context) {
         return Mono.zip(
-                validarLimite(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDiario(), "limiteDiario"),
-                validarLimite(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDisponivel(), "limiteDisponivel"),
-                validarSituacaoConta(context.getCadastroResponse().getSituacaoContaCorrente())
+                validateLimit(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDiario(), "limiteDiario"),
+                validateLimit(transferencia.getValor(), context.getSaldoContaCorrente().getValLimiteDisponivel(), "limiteDisponivel"),
+                validateAccountStatus(context.getCadastroResponse().getSituacaoContaCorrente())
         ).flatMap(tuple -> {
-            Boolean limiteDiarioValido = tuple.getT1();
-            Boolean limiteDisponivelValido = tuple.getT2();
-            Boolean contaBloqueada = tuple.getT3();
+            Boolean validDailyLimit = tuple.getT1();
+            Boolean validAvailableLimit = tuple.getT2();
+            Boolean blockedAccount = tuple.getT3();
 
-            return verificarCondicoes(limiteDiarioValido, limiteDisponivelValido, contaBloqueada, context);
+            return verifyConditions(validDailyLimit, validAvailableLimit, blockedAccount, context);
         });
     }
 
-    private Mono<TransferenciaContext> verificarCondicoes(Boolean limiteDiarioValido, Boolean limiteDisponivelValido, Boolean contaBloqueada, TransferenciaContext context) {
+    private Mono<TransferenciaBancariaContext> verifyConditions(Boolean limiteDiarioValido, Boolean limiteDisponivelValido, Boolean contaBloqueada, TransferenciaBancariaContext context) {
         if (!limiteDiarioValido) {
             logger.error("Valor da transferência excede o limite diário para a conta {}", context.getSaldoContaCorrente().getNumContaCorrente());
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Valor da transferência excede o limite diário."));
@@ -43,11 +43,11 @@ public class TransferenciaBancariaValidator {
         return Mono.just(context);
     }
 
-    private Mono<Boolean> validarLimite(BigDecimal valorTransferencia, BigDecimal valorLimite, String campo) {
+    private Mono<Boolean> validateLimit(BigDecimal valorTransferencia, BigDecimal valorLimite, String campo) {
         return Mono.just(valorTransferencia.compareTo(valorLimite) <= 0);
     }
 
-    public Mono<Boolean> validarSituacaoConta(String situacaoContaCorrente) {
+    public Mono<Boolean> validateAccountStatus(String situacaoContaCorrente) {
         return Mono.just("BLOQUEADA".equals(situacaoContaCorrente));
     }
 

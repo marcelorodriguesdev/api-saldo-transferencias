@@ -3,9 +3,9 @@ package br.com.itau.apisaldotransferencias.core.service;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +20,16 @@ class TransferenciaBancariaValidatorTest {
 
     private SaldoContaCorrenteEntity saldoContaCorrente;
     private CadastroResponse cadastroResponse;
-    private TransferenciaContext context;
-    private TransferenciaRequest transferenciaRequest;
+    private TransferenciaBancariaContext context;
+    private TransferenciaBancariaRequest transferenciaBancariaRequest;
     private TransferenciaBancariaValidator validator;
 
     @BeforeEach
     public void setUp() {
         saldoContaCorrente = mock(SaldoContaCorrenteEntity.class);
         cadastroResponse = mock(CadastroResponse.class);
-        context = mock(TransferenciaContext.class);
-        transferenciaRequest = mock(TransferenciaRequest.class);
+        context = mock(TransferenciaBancariaContext.class);
+        transferenciaBancariaRequest = mock(TransferenciaBancariaRequest.class);
         validator = new TransferenciaBancariaValidator();
 
         when(context.getSaldoContaCorrente()).thenReturn(saldoContaCorrente);
@@ -42,10 +42,10 @@ class TransferenciaBancariaValidatorTest {
         when(saldoContaCorrente.getValLimiteDiario()).thenReturn(BigDecimal.valueOf(2000));
         when(saldoContaCorrente.getValLimiteDisponivel()).thenReturn(BigDecimal.valueOf(1500));
         when(cadastroResponse.getSituacaoContaCorrente()).thenReturn("ATIVA");
-        when(transferenciaRequest.getValor()).thenReturn(BigDecimal.valueOf(1000));
+        when(transferenciaBancariaRequest.getValor()).thenReturn(BigDecimal.valueOf(1000));
 
         // Act
-        Mono<TransferenciaContext> result = validator.validarTransferencia(transferenciaRequest, context);
+        Mono<TransferenciaBancariaContext> result = validator.validateBankTransfer(transferenciaBancariaRequest, context);
 
         // Assert
         StepVerifier.create(result)
@@ -58,10 +58,10 @@ class TransferenciaBancariaValidatorTest {
         when(saldoContaCorrente.getValLimiteDiario()).thenReturn(BigDecimal.valueOf(2000));
         when(saldoContaCorrente.getValLimiteDisponivel()).thenReturn(BigDecimal.valueOf(1500));
         when(cadastroResponse.getSituacaoContaCorrente()).thenReturn("ATIVA");
-        when(transferenciaRequest.getValor()).thenReturn(BigDecimal.valueOf(3000));
+        when(transferenciaBancariaRequest.getValor()).thenReturn(BigDecimal.valueOf(3000));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            validator.validarTransferencia(transferenciaRequest, context).block();
+            validator.validateBankTransfer(transferenciaBancariaRequest, context).block();
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -73,10 +73,10 @@ class TransferenciaBancariaValidatorTest {
         when(saldoContaCorrente.getValLimiteDiario()).thenReturn(BigDecimal.valueOf(2000));
         when(saldoContaCorrente.getValLimiteDisponivel()).thenReturn(BigDecimal.valueOf(1500));
         when(cadastroResponse.getSituacaoContaCorrente()).thenReturn("ATIVA");
-        when(transferenciaRequest.getValor()).thenReturn(BigDecimal.valueOf(1600));
+        when(transferenciaBancariaRequest.getValor()).thenReturn(BigDecimal.valueOf(1600));
 
         Throwable exception = assertThrows(ResponseStatusException.class, () -> {
-            validator.validarTransferencia(transferenciaRequest, context).block();
+            validator.validateBankTransfer(transferenciaBancariaRequest, context).block();
         });
 
         assertEquals(HttpStatus.BAD_REQUEST, ((ResponseStatusException) exception).getStatusCode());
@@ -89,10 +89,10 @@ class TransferenciaBancariaValidatorTest {
         when(saldoContaCorrente.getValLimiteDiario()).thenReturn(BigDecimal.valueOf(2000));
         when(saldoContaCorrente.getValLimiteDisponivel()).thenReturn(BigDecimal.valueOf(1500));
         when(cadastroResponse.getSituacaoContaCorrente()).thenReturn("BLOQUEADA");
-        when(transferenciaRequest.getValor()).thenReturn(BigDecimal.valueOf(1000));
+        when(transferenciaBancariaRequest.getValor()).thenReturn(BigDecimal.valueOf(1000));
 
         Throwable exception = assertThrows(ResponseStatusException.class, () -> {
-            validator.validarTransferencia(transferenciaRequest, context).block();
+            validator.validateBankTransfer(transferenciaBancariaRequest, context).block();
         });
 
         assertEquals(HttpStatus.FORBIDDEN, ((ResponseStatusException) exception).getStatusCode());

@@ -2,7 +2,7 @@ package br.com.itau.apisaldotransferencias.api.payload;
 
 import java.math.BigDecimal;
 
-public class TransferenciaResponse {
+public class TransferenciaBancariaResponse {
         private String codigoTransferenciaBancaria;
         private String contaOrigem;
         private String codigoBancoDestino;
@@ -11,8 +11,8 @@ public class TransferenciaResponse {
         private BigDecimal valor;
         private String nomeCliente = null;
 
-    public TransferenciaResponse(String codigoTransferenciaBancaria, String contaOrigem, String codigoBancoDestino,
-                                 String contaDestino, String data, BigDecimal valor, String nomeCliente) {
+    public TransferenciaBancariaResponse(String codigoTransferenciaBancaria, String contaOrigem, String codigoBancoDestino,
+                                         String contaDestino, String data, BigDecimal valor, String nomeCliente) {
         this.codigoTransferenciaBancaria = codigoTransferenciaBancaria;
         this.contaOrigem = contaOrigem;
         this.codigoBancoDestino = codigoBancoDestino;
@@ -22,7 +22,7 @@ public class TransferenciaResponse {
         this.nomeCliente = nomeCliente;
     }
 
-    public TransferenciaResponse() {
+    public TransferenciaBancariaResponse() {
 
     }
 

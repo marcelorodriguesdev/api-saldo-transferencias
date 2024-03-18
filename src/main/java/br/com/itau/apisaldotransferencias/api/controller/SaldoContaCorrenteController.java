@@ -22,7 +22,7 @@ public class SaldoContaCorrenteController {
         this.saldoContaCorrenteFlow = saldoContaCorrenteFlow;
     }
 
-    @GetMapping("/saldos/{numeroContaCorrente}")
+    @GetMapping("/v1/saldos/{numeroContaCorrente}")
     public Mono<ResponseEntity<SaldoContaCorrenteResponse>> getSaldoContaCorrente(@PathVariable String numeroContaCorrente) {
         logger.info("Iniciando consulta para o número da conta corrente: {}", numeroContaCorrente);
 

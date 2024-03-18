@@ -1,13 +1,12 @@
 package br.com.itau.apisaldotransferencias.core.service;
 
-import br.com.itau.apisaldotransferencias.api.controller.SaldoContaCorrenteController;
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaRequest;
-import br.com.itau.apisaldotransferencias.api.payload.TransferenciaResponse;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaRequest;
+import br.com.itau.apisaldotransferencias.api.payload.TransferenciaBancariaResponse;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenClientMock;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenRequest;
 import br.com.itau.apisaldotransferencias.client.bacen.BacenResponse;
 import br.com.itau.apisaldotransferencias.client.cadastro.CadastroResponse;
-import br.com.itau.apisaldotransferencias.core.domain.TransferenciaContext;
+import br.com.itau.apisaldotransferencias.core.domain.TransferenciaBancariaContext;
 import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorrenteEntity;
 import br.com.itau.apisaldotransferencias.infra.database.entity.TransferenciaBancariaEntity;
 import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
@@ -40,7 +39,7 @@ public class TransferenciaBancariaService {
         this.bacenClient = bacenClient;
     }
 
-        public Mono<TransferenciaContext> createTransferencia(TransferenciaRequest request, TransferenciaContext context) {
+        public Mono<TransferenciaBancariaContext> createTransferencia(TransferenciaBancariaRequest request, TransferenciaBancariaContext context) {
             return atualizaSaldoBancarioDoPagadorEPersiste(context.getSaldoContaCorrente(), request)
                     .doOnSuccess(saldo -> logger.info("Saldo do pagador atualizado com sucesso."))
                     .zipWith(persistTransferenciaBancaria(request))
@@ -51,7 +50,7 @@ public class TransferenciaBancariaService {
                                 .doOnSuccess(bacenResp -> logger.info("Notificação ao BACEN realizada com sucesso."))
                                 .doOnError(e -> logger.error("Erro ao notificar o BACEN.", e));
 
-                        context.setTransferenciaBancaria(tuple.getT2());
+                        context.setTransferenciaBancariaEntity(tuple.getT2());
                         context.setBacenRequest(bacenRequest);
 
                         return Mono.just(context);
@@ -63,7 +62,7 @@ public class TransferenciaBancariaService {
                     });
         }
 
-    public Mono<TransferenciaResponse> getTransferencia(String idTransferenciaBancaria) {
+    public Mono<TransferenciaBancariaResponse> getTransferencia(String idTransferenciaBancaria) {
         return Mono.fromCallable(() -> transferenciaRepository.findByCodTransferenciaBancaria(idTransferenciaBancaria))
                 .doOnSuccess(transferencia -> {
                     if (transferencia != null) {
@@ -83,9 +82,9 @@ public class TransferenciaBancariaService {
                 });
     }
 
-    private static Function<TransferenciaBancariaEntity, TransferenciaResponse> parseEntityToResponse() {
+    private static Function<TransferenciaBancariaEntity, TransferenciaBancariaResponse> parseEntityToResponse() {
         return entity -> {
-            TransferenciaResponse response = new TransferenciaResponse();
+            TransferenciaBancariaResponse response = new TransferenciaBancariaResponse();
             response.setCodigoTransferenciaBancaria(entity.getCodTransferenciaBancaria());
             response.setContaOrigem(entity.getNumContaOrigem());
             response.setCodigoBancoDestino(entity.getCodBancoDestino());
@@ -97,7 +96,7 @@ public class TransferenciaBancariaService {
     }
 
 
-    private Mono<SaldoContaCorrenteEntity> atualizaSaldoBancarioDoPagadorEPersiste(SaldoContaCorrenteEntity saldoContaCorrente, TransferenciaRequest request) {
+    private Mono<SaldoContaCorrenteEntity> atualizaSaldoBancarioDoPagadorEPersiste(SaldoContaCorrenteEntity saldoContaCorrente, TransferenciaBancariaRequest request) {
         saldoContaCorrente.setValLimiteDisponivel(saldoContaCorrente.getValLimiteDisponivel().subtract(request.getValor()));
         saldoContaCorrente.setValLimiteDiario(saldoContaCorrente.getValLimiteDiario().subtract(request.getValor()));
         saldoContaCorrente.setValSaldoContaCorrente(saldoContaCorrente.getValSaldoContaCorrente().subtract(request.getValor()));
@@ -105,7 +104,7 @@ public class TransferenciaBancariaService {
         return Mono.just(saldoContaCorrenteRepository.save(saldoContaCorrente));
     }
 
-    private Mono<TransferenciaBancariaEntity> persistTransferenciaBancaria(TransferenciaRequest req) {
+    private Mono<TransferenciaBancariaEntity> persistTransferenciaBancaria(TransferenciaBancariaRequest req) {
         TransferenciaBancariaEntity transferencia = new TransferenciaBancariaEntity();
 
         transferencia.setCodTransferenciaBancaria(UUID.randomUUID().toString());
@@ -129,7 +128,7 @@ public class TransferenciaBancariaService {
                         }));
     }
 
-    private static BacenRequest montaBacenRequest(TransferenciaRequest request, CadastroResponse cadastro, Tuple2<SaldoContaCorrenteEntity, TransferenciaBancariaEntity> tuple) {
+    private static BacenRequest montaBacenRequest(TransferenciaBancariaRequest request, CadastroResponse cadastro, Tuple2<SaldoContaCorrenteEntity, TransferenciaBancariaEntity> tuple) {
         BacenRequest bacenRequest = new BacenRequest();
         bacenRequest.setNumeroContaOrigem(request.getContaOrigem());
         bacenRequest.setCodigoBancoDestino(request.getCodigoBancoDestino());
