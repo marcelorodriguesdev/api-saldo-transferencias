@@ -4,8 +4,12 @@ import br.com.itau.apisaldotransferencias.infra.database.entity.SaldoContaCorren
 import br.com.itau.apisaldotransferencias.infra.database.repository.SaldoContaCorrenteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Service
 public class SaldoContaCorrenteFlow {
@@ -19,9 +23,12 @@ public class SaldoContaCorrenteFlow {
 
     public Mono<SaldoContaCorrenteEntity> fetchSaldoContaCorrente(String numeroContaCorrente) {
         log.info("Iniciando busca pelo saldo da conta corrente: {}", numeroContaCorrente);
-        return Mono.just(repository.findByNumContaCorrente(numeroContaCorrente))
-                .doOnSuccess(saldo -> log.info("Saldo da conta corrente {} encontrado com sucesso.", numeroContaCorrente))
-                .doOnError(e -> log.error("Erro ao buscar o saldo da conta corrente {}.", numeroContaCorrente, e));
+        return Mono.justOrEmpty(repository.findByNumContaCorrente(numeroContaCorrente))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Saldo não encontrado.")))
+                .onErrorResume(e -> {
+                    log.error("Erro ao acessar o banco de dados", e);
+                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor."));
+                });
     }
-}
 
+}
