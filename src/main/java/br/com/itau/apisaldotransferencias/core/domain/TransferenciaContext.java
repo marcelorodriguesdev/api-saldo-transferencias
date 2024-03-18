@@ -11,7 +11,7 @@ public class TransferenciaContext {
 
     private TransferenciaBancariaEntity transferenciaBancaria;
 
-    private SaldoContaCorrenteEntity saldoContaCorrenteResponse;
+    private SaldoContaCorrenteEntity saldoContaCorrenteEntity;
 
     private CadastroResponse cadastroResponse;
 
@@ -33,11 +33,11 @@ public class TransferenciaContext {
     }
 
     public SaldoContaCorrenteEntity getSaldoContaCorrente() {
-        return saldoContaCorrenteResponse;
+        return saldoContaCorrenteEntity;
     }
 
     public void setSaldoContaCorrente(SaldoContaCorrenteEntity saldoContaCorrente) {
-        this.saldoContaCorrenteResponse = saldoContaCorrente;
+        this.saldoContaCorrenteEntity = saldoContaCorrente;
     }
 
     public CadastroResponse getCadastroResponse() {

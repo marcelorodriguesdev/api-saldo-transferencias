@@ -11,6 +11,10 @@ public class CadastroResponse {
         this.dataAberturaContaCorrente = dataAberturaContaCorrente;
     }
 
+    public CadastroResponse() {
+
+    }
+
     public String getSituacaoContaCorrente() {
         return situacaoContaCorrente;
     }
@@ -21,5 +25,17 @@ public class CadastroResponse {
 
     public String getNome() {
         return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setSituacaoContaCorrente(String situacaoContaCorrente) {
+        this.situacaoContaCorrente = situacaoContaCorrente;
+    }
+
+    public void setDataAberturaContaCorrente(String dataAberturaContaCorrente) {
+        this.dataAberturaContaCorrente = dataAberturaContaCorrente;
     }
 }

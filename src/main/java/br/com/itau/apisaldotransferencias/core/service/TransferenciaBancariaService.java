@@ -40,40 +40,40 @@ public class TransferenciaBancariaService {
         this.bacenClient = bacenClient;
     }
 
-    public Mono<TransferenciaContext> createTransferencia(TransferenciaRequest request, TransferenciaContext context) {
-        return atualizaSaldoBancarioDoPagadorEPersiste(context.getSaldoContaCorrente(), request)
-                .doOnSuccess(saldo -> logger.info("Saldo do pagador atualizado com sucesso."))
-                .zipWith(persistTransferenciaBancaria(request))
-                .doOnSuccess(transf -> logger.info("Transferência bancária persistida com sucesso."))
-                .flatMap(tuple -> {
-                    BacenRequest bacenRequest = montaBacenRequest(request, context.getCadastroResponse(), tuple);
-                    notificaTransferenciaAoBacen(bacenRequest)
-                            .doOnSuccess(bacenResp -> logger.info("Notificação ao BACEN realizada com sucesso."))
-                            .doOnError(e -> logger.error("Erro ao notificar o BACEN.", e));
+        public Mono<TransferenciaContext> createTransferencia(TransferenciaRequest request, TransferenciaContext context) {
+            return atualizaSaldoBancarioDoPagadorEPersiste(context.getSaldoContaCorrente(), request)
+                    .doOnSuccess(saldo -> logger.info("Saldo do pagador atualizado com sucesso."))
+                    .zipWith(persistTransferenciaBancaria(request))
+                    .doOnSuccess(transf -> logger.info("Transferência bancária persistida com sucesso."))
+                    .flatMap(tuple -> {
+                        BacenRequest bacenRequest = montaBacenRequest(request, context.getCadastroResponse(), tuple);
+                        notificaTransferenciaAoBacen(bacenRequest)
+                                .doOnSuccess(bacenResp -> logger.info("Notificação ao BACEN realizada com sucesso."))
+                                .doOnError(e -> logger.error("Erro ao notificar o BACEN.", e));
 
-                    context.setTransferenciaBancaria(tuple.getT2());
-                    context.setBacenRequest(bacenRequest);
+                        context.setTransferenciaBancaria(tuple.getT2());
+                        context.setBacenRequest(bacenRequest);
 
-                    return Mono.just(context);
-                })
-                .doOnSuccess(ctx -> logger.info("Contexto de transferência criado com sucesso."))
-                .onErrorResume(e -> {
-                    logger.error("Erro ao processar a transferência.", e);
-                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao processar a transferência", e));
-                });
-    }
+                        return Mono.just(context);
+                    })
+                    .doOnSuccess(ctx -> logger.info("Contexto de transferência criado com sucesso."))
+                    .onErrorResume(e -> {
+                        logger.error("Erro ao processar a transferência.", e);
+                        return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao processar a transferência", e));
+                    });
+        }
 
     public Mono<TransferenciaResponse> getTransferencia(String idTransferenciaBancaria) {
         return Mono.fromCallable(() -> transferenciaRepository.findByCodTransferenciaBancaria(idTransferenciaBancaria))
-                .doOnSuccess(transf -> {
-                    if (transf != null) {
+                .doOnSuccess(transferencia -> {
+                    if (transferencia != null) {
                         logger.info("Consulta da transferência realizada com sucesso.");
                     } else {
                         logger.error("Transferência bancária não encontrada.");
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transferência bancária não encontrada");
                     }
                 })
-                .map(transf -> parseEntityToResponse().apply(transf))
+                .map(transferencia -> parseEntityToResponse().apply(transferencia))
                 .doOnError(e -> logger.error("Erro ao consultar a transferência bancária no banco de dados.", e))
                 .onErrorResume(e -> {
                     if (e instanceof ResponseStatusException) {
@@ -125,7 +125,7 @@ public class TransferenciaBancariaService {
                         .filter(throwable -> ((ResponseStatusException) throwable).getStatusCode().equals(HttpStatus.TOO_MANY_REQUESTS))
                         .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                             // Em ultimo caso enviar para uma fila DLQ para reprocessar
-                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possível processar a transação após várias tentativas.", retrySignal.failure());
+                            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível processar a transação após várias tentativas.", retrySignal.failure());
                         }));
     }
 
